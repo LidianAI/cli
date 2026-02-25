@@ -5,9 +5,9 @@ Bun CLI for Lidian core REST endpoints.
 ## Install
 
 ```bash
-npm install -g @lidian/cli
+npm install -g @lidianai/cli
 # or
-bunx @lidian/cli --help
+bunx @lidianai/cli --help
 ```
 
 ## Commands
