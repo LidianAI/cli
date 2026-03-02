@@ -42,9 +42,15 @@ export const printDiscoverResult = (
     const confidence = item.matchPercent
       ? ` confidence=${item.matchPercent.toFixed(1)}%`
       : "";
+    const modes = item.paymentModes.join(",");
     print(
-      `- ${item.name} (${item.id}) auth=${item.authType} cost=${item.defaultCostPerUse}c (${formatUsd(item.defaultCostPerUse)})${confidence}`,
+      `- ${item.name} (${item.id}) cost=${item.defaultCostPerUse}c (${formatUsd(item.defaultCostPerUse)}) executable=${String(item.isExecutable)} requiresClientAuth=${String(item.requiresClientAuth)} paymentModes=${modes}${confidence}`,
     );
+    for (const endpoint of item.endpoints ?? []) {
+      print(
+        `  · endpoint=${endpoint.id} ${endpoint.method} ${endpoint.path} cost=${endpoint.pricingCents}c (${formatUsd(endpoint.pricingCents)})`,
+      );
+    }
   }
 };
 

@@ -18,12 +18,21 @@ export interface DiscoverApiResponse {
     name: string;
     description: string | null;
     endpointBase: string;
-    authType: "none" | "api_key" | "bearer" | "basic" | "oauth2" | "custom";
     defaultCostPerUse: number;
     isActive: boolean;
+    requiresClientAuth: boolean;
+    paymentModes: Array<"x402" | "prepaid_credits">;
+    isExecutable: boolean;
     openapiSpecUrl: string | null;
     createdAt: string;
     updatedAt: string;
+    endpoints?: Array<{
+      id: string;
+      path: string;
+      method: "GET" | "POST" | "PUT" | "PATCH" | "DELETE" | "HEAD" | "OPTIONS";
+      description?: string | null;
+      pricingCents: number;
+    }>;
     matchScore?: number;
     matchPercent?: number;
   }>;
