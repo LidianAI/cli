@@ -17,7 +17,6 @@ export interface FeedbackApiResponse {
 
 export const runFeedbackCommand = async (
   http: HttpClient,
-  apiKey: string | undefined,
   input: FeedbackCommandInput,
 ): Promise<FeedbackApiResponse> => {
   if (!isUuid(input.executionId)) {
@@ -33,7 +32,7 @@ export const runFeedbackCommand = async (
   return http.post<FeedbackApiResponse, FeedbackCommandInput>(
     "/v1/consume/feedback",
     input,
-    apiKey,
+    undefined,
   );
 };
 

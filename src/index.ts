@@ -140,7 +140,7 @@ const main = async (): Promise<void> => {
       }
       const rank = toIntInRange(rankRaw, "rank", 0, 10);
       const feedback = asString(parsed.options.feedback);
-      const result = await runFeedbackCommand(http, apiKey, {
+      const result = await runFeedbackCommand(http, {
         executionId,
         rank,
         ...(feedback ? { feedback } : {}),
