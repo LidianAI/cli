@@ -209,18 +209,20 @@ const printUsage = (): void => {
     '  lidian discover --q "<term>" [--page 1] [--pageSize 1..3] [--category <name>] [--auth-type none|api_key|bearer|basic|oauth2|custom]',
   );
   print(
-    "               [--min-price <cents>] [--max-price <cents>] [--api-key <key>] [--env production|staging] [--api-base <url>] [--json]",
+    "               [--min-price <cents>] [--max-price <cents>] [--env production|staging] [--api-base <url>] [--json]",
   );
   print(
-    "  lidian consume --endpoint-id <uuid> --params '<json>' [--payment-rail prepaid_credits|x402] [--api-key <key>] [--env production|staging] [--api-base <url>] [--json]",
-  );
-  print("             [--network base|ethereum]");
-  print(
-    '  lidian feedback --execution-id <uuid> --rank <0..10> [--feedback "<text>"] [--api-key <key>] [--env production|staging] [--api-base <url>] [--json]',
+    "  lidian consume --endpoint-id <uuid> --params '<json>' [--payment-rail prepaid_credits|x402] [--network base|ethereum] [--env production|staging] [--api-base <url>] [--json]",
   );
   print(
-    "  lidian account [--api-key <key>] [--env production|staging] [--api-base <url>] [--json]",
+    '  lidian feedback --execution-id <uuid> --rank <0..10> [--feedback "<text>"] [--env production|staging] [--api-base <url>] [--json]',
   );
+  print(
+    "  lidian account [--env production|staging] [--api-base <url>] [--json]",
+  );
+  print("");
+  print("Auth (all optional):");
+  print("  --api-key <key> | LIDIAN_API_KEY | lidian login");
   print("");
   print("Env resolution:");
   print("  --api-base > LIDIAN_API_BASE > --env > LIDIAN_ENV > production");
