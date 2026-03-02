@@ -3,6 +3,7 @@
 import { runAccountCommand } from "@/commands/account";
 import { type PaymentRail, runConsumeCommand } from "@/commands/consume";
 import { runDiscoverCommand } from "@/commands/discover";
+import { runFeedbackCommand } from "@/commands/feedback";
 import { runLoginCommand } from "@/commands/login";
 import { resolveApiKey } from "@/lib/auth";
 import { CliError } from "@/lib/errors";
@@ -13,10 +14,11 @@ import {
   printAccountResult,
   printConsumeResult,
   printDiscoverResult,
+  printFeedbackResult,
 } from "@/lib/output";
 
 interface ParsedArgs {
-  command: "discover" | "consume" | "account" | "login";
+  command: "discover" | "consume" | "feedback" | "account" | "login";
   options: Record<string, string | boolean>;
 }
 
@@ -40,6 +42,7 @@ const COMMAND_OPTIONS: Record<ParsedArgs["command"], Set<string>> = {
     "max-price",
   ]),
   consume: new Set(["endpoint-id", "params", "payment-rail", "network"]),
+  feedback: new Set(["execution-id", "rank", "feedback"]),
   account: new Set([]),
   login: new Set(["key"]),
 };
@@ -124,6 +127,26 @@ const main = async (): Promise<void> => {
       printAccountResult(result, asJson);
       return;
     }
+    case "feedback": {
+      const apiKey = await resolveApiKey(asString(parsed.options["api-key"]));
+      const executionId = asString(parsed.options["execution-id"]);
+      if (!executionId) {
+        throw new CliError("Missing --execution-id for feedback command.");
+      }
+      const rankRaw = asString(parsed.options.rank);
+      if (!rankRaw) {
+        throw new CliError("Missing --rank for feedback command.");
+      }
+      const rank = toIntInRange(rankRaw, "rank", 0, 10);
+      const feedback = asString(parsed.options.feedback);
+      const result = await runFeedbackCommand(http, apiKey, {
+        executionId,
+        rank,
+        ...(feedback ? { feedback } : {}),
+      });
+      printFeedbackResult(result, asJson);
+      return;
+    }
     default:
       throw new CliError("Unknown command.", 1);
   }
@@ -134,12 +157,13 @@ const parseArgs = (argv: string[]): ParsedArgs => {
   if (
     command !== "discover" &&
     command !== "consume" &&
+    command !== "feedback" &&
     command !== "account" &&
     command !== "login"
   ) {
     printUsage();
     throw new CliError(
-      "Invalid command. Use one of: login, discover, consume, account.",
+      "Invalid command. Use one of: login, discover, consume, feedback, account.",
       1,
     );
   }
@@ -191,6 +215,9 @@ const printUsage = (): void => {
   );
   print("             [--network base|ethereum]");
   print(
+    '  lidian feedback --execution-id <uuid> --rank <0..10> [--feedback "<text>"] [--api-key <key>] [--env production|staging] [--api-base <url>] [--json]',
+  );
+  print(
     "  lidian account [--api-key <key>] [--env production|staging] [--api-base <url>] [--json]",
   );
   print("");
@@ -210,6 +237,26 @@ const toInt = (value: string | undefined, fallback: number): number => {
   const parsed = Number.parseInt(value, 10);
   if (Number.isNaN(parsed) || parsed < 1) {
     throw new CliError(`Invalid integer value: ${value}`);
+  }
+  return parsed;
+};
+
+const toIntInRange = (
+  value: string,
+  flagName: string,
+  min: number,
+  max: number,
+): number => {
+  const parsed = Number.parseInt(value, 10);
+  if (
+    Number.isNaN(parsed) ||
+    String(parsed) !== value ||
+    parsed < min ||
+    parsed > max
+  ) {
+    throw new CliError(
+      `Invalid --${flagName} value: ${value}. Expected integer ${min}..${max}.`,
+    );
   }
   return parsed;
 };

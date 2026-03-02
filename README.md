@@ -13,6 +13,7 @@ bunx @lidianai/cli --help
 ```bash
 lidian discover --q "<term>" [--page 1] [--pageSize 1..3] [--category <name>] [--auth-type none|api_key|bearer|basic|oauth2|custom] [--min-price <cents>] [--max-price <cents>] [--api-key <key>] [--env production|staging] [--api-base <url>] [--json]
 lidian consume --endpoint-id <uuid> --params '<json>' [--payment-rail prepaid_credits|x402] [--network base|ethereum] [--api-key <key>] [--env production|staging] [--api-base <url>] [--json]
+lidian feedback --execution-id <uuid> --rank <0..10> [--feedback "<text>"] [--api-key <key>] [--env production|staging] [--api-base <url>] [--json]
 lidian account [--api-key <key>] [--env production|staging] [--api-base <url>] [--json]
 lidian login [--key ld_...] [--json]
 lidian --help
@@ -37,7 +38,10 @@ lidian --help
 When `--payment-rail x402` is used, CLI performs:
 1. `POST /v1/payments/requirements`
 2. `POST /v1/payments/verify`
-3. `POST /v1/consume`
+3. `POST /v1/consume` (returns `executionId`)
+
+Submit feedback later:
+4. `POST /v1/consume/feedback` with `executionId`, `rank`, optional `feedback`
 
 ## Dev
 

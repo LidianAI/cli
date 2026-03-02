@@ -4,6 +4,7 @@ import type {
   ConsumeCommandResult,
 } from "@/commands/consume";
 import type { DiscoverApiResponse } from "@/commands/discover";
+import type { FeedbackApiResponse } from "@/commands/feedback";
 import { CliError } from "@/lib/errors";
 
 export const print = (message: string): void => {
@@ -77,7 +78,24 @@ export const printAccountResult = (
   );
 };
 
+export const printFeedbackResult = (
+  result: FeedbackApiResponse,
+  asJson: boolean,
+): void => {
+  if (asJson) {
+    printResult(result, true);
+    return;
+  }
+  const feedback = result.feedback ?? "<none>";
+  print(
+    `Feedback saved for execution=${result.executionId} rank=${result.rank} submittedBy=${result.submittedBy}`,
+  );
+  print(`Updated at: ${result.updatedAt}`);
+  print(`Comment: ${feedback}`);
+};
+
 const printExecutionResult = (result: ConsumeApiResponse): void => {
+  print(`Execution ID: ${result.executionId}`);
   print(
     `Execution succeeded. Spent=${result.credits.spent} cents (${formatUsd(result.credits.spent)}) balance=${result.credits.balance} cents (${formatUsd(result.credits.balance)})`,
   );

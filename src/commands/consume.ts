@@ -16,6 +16,7 @@ export interface ConsumeCommandInput {
 }
 
 export interface ConsumeApiResponse {
+  executionId: string;
   data: unknown;
   credits: {
     spent: number;
