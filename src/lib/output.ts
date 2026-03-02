@@ -1,6 +1,9 @@
 import type { AccountApiResponse } from "@/commands/account";
-import type { ActApiResponse, ActCommandResult } from "@/commands/act";
-import type { QueryApiResponse } from "@/commands/query";
+import type {
+  ConsumeApiResponse,
+  ConsumeCommandResult,
+} from "@/commands/consume";
+import type { DiscoverApiResponse } from "@/commands/discover";
 import { CliError } from "@/lib/errors";
 
 export const print = (message: string): void => {
@@ -19,8 +22,8 @@ export const printResult = (result: unknown, asJson: boolean): void => {
   print(formatForHuman(result));
 };
 
-export const printQueryResult = (
-  result: QueryApiResponse,
+export const printDiscoverResult = (
+  result: DiscoverApiResponse,
   asJson: boolean,
 ): void => {
   if (asJson) {
@@ -39,13 +42,13 @@ export const printQueryResult = (
       ? ` confidence=${item.matchPercent.toFixed(1)}%`
       : "";
     print(
-      `- ${item.name} (${item.id}) auth=${item.authType} cost=${item.defaultCostPerUse}c${confidence}`,
+      `- ${item.name} (${item.id}) auth=${item.authType} cost=${item.defaultCostPerUse}c (${formatUsd(item.defaultCostPerUse)})${confidence}`,
     );
   }
 };
 
-export const printActResult = (
-  result: ActCommandResult,
+export const printConsumeResult = (
+  result: ConsumeCommandResult,
   asJson: boolean,
 ): void => {
   if (asJson) {
@@ -69,12 +72,14 @@ export const printAccountResult = (
     return;
   }
   print(`Account: ${result.user.id}`);
-  print(`Balance: ${result.balance.balance} credits`);
+  print(
+    `Balance: ${result.balance.balance} cents (${formatUsd(result.balance.balance)})`,
+  );
 };
 
-const printExecutionResult = (result: ActApiResponse): void => {
+const printExecutionResult = (result: ConsumeApiResponse): void => {
   print(
-    `Execution succeeded. Spent=${result.credits.spent} balance=${result.credits.balance}`,
+    `Execution succeeded. Spent=${result.credits.spent} cents (${formatUsd(result.credits.spent)}) balance=${result.credits.balance} cents (${formatUsd(result.credits.balance)})`,
   );
   print(JSON.stringify(result.data, null, 2));
 };
@@ -84,6 +89,10 @@ const formatForHuman = (value: unknown): string => {
     return value;
   }
   return JSON.stringify(value, null, 2);
+};
+
+const formatUsd = (cents: number): string => {
+  return `$${(cents / 100).toFixed(2)}`;
 };
 
 export const fail = (error: unknown): never => {

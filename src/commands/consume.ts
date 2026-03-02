@@ -8,14 +8,14 @@ import {
 
 export type PaymentRail = "prepaid_credits" | "x402";
 
-export interface ActCommandInput {
+export interface ConsumeCommandInput {
   endpointId: string;
   params: Record<string, unknown>;
   paymentRail: PaymentRail;
   network?: string;
 }
 
-export interface ActApiResponse {
+export interface ConsumeApiResponse {
   data: unknown;
   credits: {
     spent: number;
@@ -23,19 +23,19 @@ export interface ActApiResponse {
   };
 }
 
-export interface ActCommandResult {
-  execution: ActApiResponse;
+export interface ConsumeCommandResult {
+  execution: ConsumeApiResponse;
   payment?: {
     requirements: PaymentRequirementsResponse;
     verified: boolean;
   };
 }
 
-export const runActCommand = async (
+export const runConsumeCommand = async (
   http: HttpClient,
   apiKey: string,
-  input: ActCommandInput,
-): Promise<ActCommandResult> => {
+  input: ConsumeCommandInput,
+): Promise<ConsumeCommandResult> => {
   if (!isUuid(input.endpointId)) {
     throw new CliError("endpointId must be a valid UUID.");
   }
@@ -53,8 +53,8 @@ export const runActCommand = async (
       requirements.payTo,
     );
 
-    const execution = await http.post<ActApiResponse, ActCommandInput>(
-      "/v1/act",
+    const execution = await http.post<ConsumeApiResponse, ConsumeCommandInput>(
+      "/v1/consume",
       input,
       apiKey,
     );
@@ -68,8 +68,8 @@ export const runActCommand = async (
     };
   }
 
-  const execution = await http.post<ActApiResponse, ActCommandInput>(
-    "/v1/act",
+  const execution = await http.post<ConsumeApiResponse, ConsumeCommandInput>(
+    "/v1/consume",
     input,
     apiKey,
   );
