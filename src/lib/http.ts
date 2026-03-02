@@ -60,6 +60,10 @@ const authHeaders = (apiKey?: string): HeadersInit => {
 };
 
 const handleResponse = async <T>(response: Response): Promise<T> => {
+  const hasPaymentHeader =
+    response.headers.get("x402") !== null ||
+    response.headers.get("payment-required") !== null;
+
   const json = (await response
     .json()
     .catch(() => null)) as ApiResponse<T> | null;
@@ -85,6 +89,10 @@ const handleResponse = async <T>(response: Response): Promise<T> => {
       throw new CliError(json.message, 1);
     }
     throw new CliError(`Request failed with status ${response.status}`, 1);
+  }
+
+  if (hasPaymentHeader) {
+    return null as T;
   }
 
   if (!json || !("success" in json) || json.success !== true) {
