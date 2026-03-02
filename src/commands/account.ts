@@ -17,7 +17,7 @@ export interface AccountApiResponse {
 
 export const runAccountCommand = async (
   http: HttpClient,
-  apiKey: string,
+  apiKey: string | undefined,
 ): Promise<AccountApiResponse> => {
   return http.get<AccountApiResponse>("/v1/account", apiKey);
 };

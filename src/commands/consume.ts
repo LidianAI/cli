@@ -34,7 +34,7 @@ export interface ConsumeCommandResult {
 
 export const runConsumeCommand = async (
   http: HttpClient,
-  apiKey: string,
+  apiKey: string | undefined,
   input: ConsumeCommandInput,
 ): Promise<ConsumeCommandResult> => {
   if (!isUuid(input.endpointId)) {

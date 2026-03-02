@@ -108,8 +108,9 @@ const main = async (): Promise<void> => {
       }
       const paramsRaw = asString(parsed.options.params) ?? "{}";
       const params = parseJsonObject(paramsRaw, "--params");
-      const paymentRail = asPaymentRail(
-        asString(parsed.options["payment-rail"]) ?? "prepaid_credits",
+      const paymentRail = resolvePaymentRail(
+        asString(parsed.options["payment-rail"]),
+        apiKey,
       );
       const network = asNetwork(asString(parsed.options.network));
       const result = await runConsumeCommand(http, apiKey, {
@@ -292,6 +293,16 @@ const parseJsonObject = (
 const asPaymentRail = (value: string): PaymentRail => {
   if (value === "prepaid_credits" || value === "x402") return value;
   throw new CliError("Invalid --payment-rail. Use prepaid_credits or x402.");
+};
+
+const resolvePaymentRail = (
+  value: string | undefined,
+  apiKey: string | undefined,
+): PaymentRail => {
+  if (value) {
+    return asPaymentRail(value);
+  }
+  return apiKey && apiKey.trim().length > 0 ? "prepaid_credits" : "x402";
 };
 
 const asAuthType = (

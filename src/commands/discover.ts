@@ -34,7 +34,7 @@ export interface DiscoverApiResponse {
 
 export const runDiscoverCommand = async (
   http: HttpClient,
-  apiKey: string,
+  apiKey: string | undefined,
   input: DiscoverCommandInput,
 ): Promise<DiscoverApiResponse> => {
   if (input.pageSize < 1 || input.pageSize > 3) {

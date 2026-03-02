@@ -27,7 +27,7 @@ export interface PaymentVerifyResponse {
 
 export const requestPaymentRequirements = async (
   http: HttpClient,
-  apiKey: string,
+  apiKey: string | undefined,
   endpointId: string,
   network?: string,
 ): Promise<PaymentRequirementsResponse> => {
@@ -43,7 +43,7 @@ export const requestPaymentRequirements = async (
 
 export const verifyPaymentAddress = async (
   http: HttpClient,
-  apiKey: string,
+  apiKey: string | undefined,
   payTo: string,
 ): Promise<PaymentVerifyResponse> => {
   return http.post<PaymentVerifyResponse, { payTo: string }>(

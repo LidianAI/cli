@@ -17,7 +17,7 @@ export interface FeedbackApiResponse {
 
 export const runFeedbackCommand = async (
   http: HttpClient,
-  apiKey: string,
+  apiKey: string | undefined,
   input: FeedbackCommandInput,
 ): Promise<FeedbackApiResponse> => {
   if (!isUuid(input.executionId)) {

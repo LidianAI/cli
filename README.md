@@ -43,6 +43,10 @@ When `--payment-rail x402` is used, CLI performs:
 Submit feedback later:
 4. `POST /v1/consume/feedback` with `executionId`, `rank`, optional `feedback`
 
+Default payment rail behavior when `--payment-rail` is omitted:
+- with API key/token: `prepaid_credits`
+- without auth: `x402`
+
 ## Dev
 
 ```bash
