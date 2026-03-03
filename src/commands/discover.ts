@@ -32,6 +32,9 @@ export interface DiscoverApiResponse {
       method: "GET" | "POST" | "PUT" | "PATCH" | "DELETE" | "HEAD" | "OPTIONS";
       description?: string | null;
       pricingCents: number;
+      inputMode?: "params" | "params.body";
+      requestSchema?: Record<string, unknown> | null;
+      requestRequired?: string[];
     }>;
     matchScore?: number;
     matchPercent?: number;
